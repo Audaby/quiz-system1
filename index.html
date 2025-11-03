@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Exercises</title>
+<style>
+button {
+    display: block;
+    width:100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#quiz-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 2px solid rgb(13, 128, 0);
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+#retry { background-color: #2196F3; }
+#back { background-color: #f39c12; }
+li { cursor: pointer; margin: 8px 0; color: #007bff; }
+input[type="text"] { width: 100%; padding: 6px; margin-top: 4px; margin-bottom: 4px; }
+.feedback { margin-top: 4px; }
+</style>
+</head>
+<body>
+<div id="quiz-container">
+    <h2>Select a Course</h2>
+    <ul id="course-list"></ul>
+</div>
+
+<script>
+// Load exercises from JSON
+fetch("exercises.json")
+.then(res => res.json())
+.then(data => {
+    const container = document.getElementById("quiz-container");
+
+    // Show courses list
+    function showCourses() {
+        const courses = [...new Set(data.map(ex => ex.course))];
+        container.innerHTML = `<h2>Select a Course</h2><ul id="course-list"></ul>`;
+        const courseList = document.getElementById("course-list");
+
+        courses.forEach(course => {
+            const li = document.createElement("li");
+            li.textContent = course.charAt(0).toUpperCase() + course.slice(1);
+            li.addEventListener("click", () => showExercises(course));
+            courseList.appendChild(li);
+        });
+    }
+
+    // Show exercises for a course
+    function showExercises(course) {
+        const courseExercises = data.filter(ex => ex.course === course);
+        container.innerHTML = `<h2>${course.charAt(0).toUpperCase() + course.slice(1)} Exercises</h2>
+                               <ul id="exercise-list"></ul>
+                               <button id="back">Back to Courses</button>`;
+        const list = document.getElementById("exercise-list");
+
+        courseExercises.forEach(ex => {
+            const item = document.createElement("li");
+            item.textContent = ex.title;
+            item.addEventListener("click", () => loadQuiz(ex));
+            list.appendChild(item);
+        });
+
+        document.getElementById("back").addEventListener("click", showCourses);
+    }
+
+    // Load and render a quiz
+    function loadQuiz(exercise) {
+        const quizKey = `quizData_${exercise.id}`;
+        const quizData = exercise.questions;
+
+        container.innerHTML = `
+            <h2>${exercise.title}</h2>
+            <div id="quiz"></div>
+            <button id="submit">Submit Answers</button>
+            <div id="result"></div>
+            <button id="retry" style="display:none;">Try Again</button>
+            <button id="back">Back to Courses</button>
+        `;
+
+        const quizElement = document.getElementById("quiz");
+        const resultContainer = document.getElementById("result");
+        const submitButton = document.getElementById("submit");
+        const retryButton = document.getElementById("retry");
+        const backButton = document.getElementById("back");
+
+        backButton.addEventListener("click", showCourses);
+
+        function renderQuiz(savedProgress) {
+            quizElement.innerHTML = quizData.map((q, index) => {
+                const savedAnswer = savedProgress?.answers?.[index];
+                const isDisabled = savedProgress ? "disabled" : "";
+
+                if(q.type === "completion") {
+                    return `
+                        <div class="question" id="question-${index}">
+                            <p>${q.question}</p>
+                            <input type="text" name="q${index}" value="${savedAnswer || ""}" ${isDisabled}>
+                            <div class="feedback" id="feedback-${index}"></div>
+                        </div>
+                    `;
+                } else {
+                    const options = ["a","b","c","d"].filter(opt => q[opt] !== undefined)
+                        .map(opt => `<label><input type="radio" name="q${index}" value="${opt}" ${savedAnswer===opt?"checked":""} ${isDisabled}> ${q[opt]}</label><br>`).join("");
+                    return `<div class="question" id="question-${index}"><p>${q.question}</p>${options}<div class="feedback" id="feedback-${index}"></div></div>`;
+                }
+            }).join("");
+        }
+
+        function showResults(score) {
+            quizData.forEach((q,index) => {
+                const feedback = document.getElementById(`feedback-${index}`);
+                const questionDiv = document.getElementById(`question-${index}`);
+                const savedAnswer = JSON.parse(localStorage.getItem(quizKey))?.answers?.[index];
+
+                let correct = false;
+                if(q.type === "completion") {
+                    correct = savedAnswer?.trim().toLowerCase() === q.correct.trim().toLowerCase();
+                } else {
+                    correct = savedAnswer === q.correct;
+                }
+
+                if(correct) {
+                    feedback.innerHTML = `<span style="color:green;">✔ Correct!</span>`;
+                    questionDiv.style.backgroundColor = "#e8f5e9";
+                } else {
+                    let correctText = q.type === "completion" ? q.correct : q[q.correct];
+                    feedback.innerHTML = `<span style="color:red;">✘ Wrong! Correct answer: <b>${correctText}</b></span>`;
+                    questionDiv.style.backgroundColor = "#ffebee";
+                }
+            });
+            resultContainer.innerHTML = `<hr><p>You scored <b>${score}</b> out of <b>${quizData.length}</b>.</p>`;
+        }
+
+        function initQuiz() {
+            const savedProgress = JSON.parse(localStorage.getItem(quizKey));
+            renderQuiz(savedProgress);
+            if(savedProgress){
+                showResults(savedProgress.score);
+                submitButton.disabled = true;
+                retryButton.style.display = "block";
+            } else {
+                resultContainer.innerHTML = "";
+                submitButton.disabled = false;
+                retryButton.style.display = "none";
+            }
+        }
+
+        submitButton.addEventListener("click", () => {
+            let score = 0;
+            const answers = [];
+            quizData.forEach((q,index) => {
+                let answer;
+                if(q.type === "completion") {
+                    answer = document.querySelector(`input[name="q${index}"]`).value;
+                    if(answer.trim().toLowerCase() === q.correct.trim().toLowerCase()) score++;
+                } else {
+                    const checked = document.querySelector(`input[name="q${index}"]:checked`);
+                    answer = checked ? checked.value : null;
+                    if(answer === q.correct) score++;
+                }
+
+                answers.push(answer);
+
+                // Disable all inputs
+                const inputs = document.querySelectorAll(q.type==="completion"?`input[name="q${index}"]`:`input[name="q${index}"]`);
+                inputs.forEach(i => i.disabled = true);
+            });
+
+            localStorage.setItem(quizKey, JSON.stringify({answers, score}));
+            showResults(score);
+            submitButton.disabled = true;
+            retryButton.style.display = "block";
+        });
+
+        retryButton.addEventListener("click", () => {
+            localStorage.removeItem(quizKey);
+            initQuiz();
+        });
+
+        initQuiz();
+    }
+
+    showCourses();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+[
+  {
+    "id": "english_free_lesson1",
+    "course": "english",
+    "title": "English - Free Mode Lesson 1",
+    "questions": [
+      {
+        "type": "multiple-choice",
+        "question": "Choose the correct verb form: I ___ to school every day.",
+        "a": "go",
+        "b": "goes",
+        "c": "gone",
+        "d": "going",
+        "correct": "a"
+      },
+      {
+        "type": "completion",
+        "question": "Fill in the blank: She ___ reading a book.",
+        "correct": "is"
+      },
+      {
+        "type": "true-false",
+        "question": "The word 'run' is a noun.",
+        "a": "True",
+        "b": "False",
+        "correct": "b"
+      }
+    ]
+  },
+  {
+    "id": "english_free_lesson2",
+    "course": "english",
+    "title": "English - Free Mode Lesson 2",
+    "questions": [
+      {
+        "type": "multiple-choice",
+        "question": "Which of these is a noun?",
+        "a": "Run",
+        "b": "Apple",
+        "c": "Quickly",
+        "d": "Blue",
+        "correct": "b"
+      },
+      {
+        "type": "completion",
+        "question": "Fill in the blank: They ___ playing football every Sunday.",
+        "correct": "are"
+      },
+      {
+        "type": "true-false",
+        "question": "The word 'happy' is an adjective.",
+        "a": "True",
+        "b": "False",
+        "correct": "a"
+      }
+    ]
+  },
+  {
+    "id": "swahili_free_lesson1",
+    "course": "swahili",
+    "title": "Swahili - Free Mode Lesson 1",
+    "questions": [
+      {
+        "type": "multiple-choice",
+        "question": "Chagua neno sahihi: Mimi ___ shule kila siku.",
+        "a": "ninaenda",
+        "b": "anaenda",
+        "c": "wanaenda",
+        "d": "kwenda",
+        "correct": "a"
+      },
+      {
+        "type": "completion",
+        "question": "Kamilisha sentensi: Yeye ___ kusoma kitabu.",
+        "correct": "ana"
+      },
+      {
+        "type": "true-false",
+        "question": "Neno 'kitabu' ni nomino.",
+        "a": "True",
+        "b": "False",
+        "correct": "a"
+      }
+    ]
+  },
+  {
+    "id": "ict_free_lesson1",
+    "course": "ict",
+    "title": "ICT - Free Mode Lesson 1",
+    "questions": [
+      {
+        "type": "multiple-choice",
+        "question": "Which of these is a programming language?",
+        "a": "HTML",
+        "b": "Python",
+        "c": "HTTP",
+        "d": "CSS",
+        "correct": "b"
+      },
+      {
+        "type": "completion",
+        "question": "Fill in the blank: A computer stores data in ___ format.",
+        "correct": "binary"
+      },
+      {
+        "type": "true-false",
+        "question": "CSS is used to style websites.",
+        "a": "True",
+        "b": "False",
+        "correct": "a"
+      }
+    ]
+  },
+  {
+    "id": "webdev_free_lesson1",
+    "course": "webdev",
+    "title": "Web Development - Free Mode Lesson 1",
+    "questions": [
+      {
+        "type": "multiple-choice",
+        "question": "Which tag is used for headings in HTML?",
+        "a": "<head>",
+        "b": "<h1>",
+        "c": "<title>",
+        "d": "<header>",
+        "correct": "b"
+      },
+      {
+        "type": "completion",
+        "question": "Fill in the blank: HTML stands for HyperText ___ Language.",
+        "correct": "Markup"
+      },
+      {
+        "type": "true-false",
+        "question": "JavaScript can change HTML content dynamically.",
+        "a": "True",
+        "b": "False",
+        "correct": "a"
+      }
+    ]
+  },
+  {
+    "id": "webdev_free_lesson2",
+    "course": "webdev",
+    "title": "Web Development - Free Mode Lesson 2",
+    "questions": [
+      {
+        "type": "multiple-choice",
+        "question": "Which attribute defines an image source in HTML?",
+        "a": "src",
+        "b": "href",
+        "c": "link",
+        "d": "img",
+        "correct": "a"
+      },
+      {
+        "type": "completion",
+        "question": "Fill in the blank: CSS stands for ___ Style Sheets.",
+        "correct": "Cascading"
+      },
+      {
+        "type": "true-false",
+        "question": "HTML forms can submit data to a server.",
+        "a": "True",
+        "b": "False",
+        "correct": "a"
+      }
+    ]
+  }
+]
